@@ -1,16 +1,58 @@
 import type { Express } from "express";
-import { createServer, type Server } from "http";
+import type { Server } from "http";
 import { storage } from "./storage";
+import { api } from "@shared/routes";
 
-export async function registerRoutes(
-  httpServer: Server,
-  app: Express
-): Promise<Server> {
-  // put application routes here
-  // prefix all routes with /api
+export async function registerRoutes(httpServer: Server, app: Express): Promise<Server> {
+  app.get(api.products.list.path, async (req, res) => {
+    const products = await storage.getProducts();
+    res.json(products);
+  });
 
-  // use storage to perform CRUD operations on the storage interface
-  // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
+  app.get(api.products.get.path, async (req, res) => {
+    const product = await storage.getProduct(Number(req.params.id));
+    if (!product) return res.status(404).json({ message: "Not found" });
+    res.json(product);
+  });
+
+  // Seed data logic
+  const existing = await storage.getProducts();
+  if (existing.length === 0) {
+    console.log("Seeding database...");
+    await storage.createProduct({
+      name: "Starter Plan",
+      description: "Perfect for getting started with basic features.",
+      price: 999,
+      category: "subscription",
+      imageUrl: "https://images.unsplash.com/photo-1519389950473-47ba0277781c",
+      features: ["720p Streaming", "1 User Profile", "Ad-supported"]
+    });
+    await storage.createProduct({
+      name: "Pro Gamer Plan",
+      description: "For serious gamers who want the best experience.",
+      price: 1999,
+      category: "subscription",
+      imageUrl: "https://images.unsplash.com/photo-1534423861386-85a16f5d13fd",
+      features: ["4K HDR Streaming", "4 User Profiles", "No Ads", "Early Access"]
+    });
+    await storage.createProduct({
+      name: "1000 Credits",
+      description: "Instant top-up for in-game purchases.",
+      price: 1000,
+      category: "topup",
+      imageUrl: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f",
+      features: []
+    });
+    await storage.createProduct({
+      name: "5000 Credits",
+      description: "Best value bundle for dedicated players.",
+      price: 4500,
+      category: "topup",
+      imageUrl: "https://images.unsplash.com/photo-1614680376593-902f74cf0d41",
+      features: []
+    });
+    console.log("Database seeded!");
+  }
 
   return httpServer;
 }
