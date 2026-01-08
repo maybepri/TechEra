@@ -22,9 +22,7 @@ export function Navbar() {
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform duration-200">
               <Sparkles className="w-5 h-5 fill-current" />
             </div>
-            <span className="font-display font-bold text-2xl tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
-              TechStore
-            </span>
+            <span className="font-display font-bold text-2xl tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">TechEra</span>
           </Link>
 
           {/* Desktop Nav */}
@@ -66,7 +64,6 @@ export function Navbar() {
           </button>
         </div>
       </div>
-
       {/* Mobile Nav */}
       <AnimatePresence>
         {isOpen && (
