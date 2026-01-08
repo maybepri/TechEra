@@ -15,6 +15,31 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     res.json(product);
   });
 
+  app.post(api.orders.create.path, async (req, res) => {
+    try {
+      const input = api.orders.create.input.parse(req.body);
+      const order = await storage.createOrder(input);
+      res.status(201).json(order);
+    } catch (err) {
+      res.status(400).json({ message: "Invalid order data" });
+    }
+  });
+
+  app.get(api.orders.list.path, async (req, res) => {
+    const orders = await storage.getOrders();
+    res.json(orders);
+  });
+
+  app.get(api.orders.verifyPayment.path, async (req, res) => {
+    const { oid, amt, refId } = req.query;
+    try {
+      await storage.updateOrderStatus(Number(oid), "paid", String(refId));
+      res.json({ success: true, message: "Payment verified successfully" });
+    } catch (err) {
+      res.status(400).json({ success: false, message: "Payment verification failed" });
+    }
+  });
+
   // Seed data logic
   const existing = await storage.getProducts();
   if (existing.length === 0) {

@@ -42,6 +42,19 @@ export const api = {
         200: z.array(z.custom<typeof orders.$inferSelect>()),
       },
     },
+    verifyPayment: {
+      method: 'GET' as const,
+      path: '/api/payments/esewa/verify',
+      input: z.object({
+        oid: z.string(),
+        amt: z.string(),
+        refId: z.string(),
+      }),
+      responses: {
+        200: z.object({ success: z.boolean(), message: z.string() }),
+        400: z.object({ success: z.boolean(), message: z.string() }),
+      },
+    },
   },
 };
 

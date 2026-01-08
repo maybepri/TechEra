@@ -7,7 +7,9 @@ export const orders = pgTable("orders", {
   id: serial("id").primaryKey(),
   productId: integer("product_id").notNull().references(() => products.id),
   customerEmail: text("customer_email").notNull(),
-  status: text("status").notNull().default("pending"),
+  status: text("status").notNull().default("pending"), // pending, paid, failed
+  paymentMethod: text("payment_method"),
+  transactionId: text("transaction_id"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
